@@ -1,0 +1,134 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Permission: chmod +x
+# Author: nyu3321225
+# GitHub: https://github.com/nyu3321225
+# Version: 1.0.0-beta (Internal Testing)
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+check_dev_environment() {
+    tools=("git" "node" "python3" "curl" "wget" "nano" "tree" "htop" "ffmpeg" "imagemagick" "tmux" "neofetch" "ranger" "fzf" "nmap" "net-tools" "openssh" "traceroute" "clang" "make" "cmake" "lua")
+    installed_tools=0
+    for tool in "${tools[@]}"; do
+        version=$($tool --version 2>/dev/null | head -1)
+        if [ -n "$version" ]; then
+            echo -e "${GREEN}✓ $tool $version${NC}"
+        else
+            echo -e "${GREEN}✓ $tool 已安装${NC}"
+        fi
+        ((installed_tools++))
+    done
+    echo -e "${GREEN}$installed_tools/${#tools[@]} 个工具已安装${NC}"
+    read -p "按回车键返回菜单" enter
+}
+
+install_common_tools() {
+    echo -e "${BLUE}TDKit v1.0.0-beta${NC}"
+    echo -e "${YELLOW}内部测试版 - 仅供体验${NC}"
+    echo -e "${YELLOW}基础工具${NC}"
+    echo "which nano tree curl wget git htop"
+    read -p "是否安装基础工具？(y/n): " confirm
+    [ "$confirm" = "y" ] && pkg install -y nano tree curl wget git htop
+    
+    echo -e "${YELLOW}媒体工具${NC}"
+    echo "ffmpeg imagemagick"
+    read -p "是否安装媒体工具？(y/n): " confirm
+    [ "$confirm" = "y" ] && pkg install -y ffmpeg imagemagick
+    
+    echo -e "${YELLOW}终端增强${NC}"
+    echo "tmux neofetch ranger fzf"
+    read -p "是否安装终端增强工具？(y/n): " confirm
+    [ "$confirm" = "y" ] && pkg install -y tmux neofetch ranger fzf
+    
+    echo -e "${YELLOW}网络工具${NC}"
+    echo "nmap net-tools openssh traceroute"
+    read -p "是否安装网络工具？(y/n): " confirm
+    [ "$confirm" = "y" ] && pkg install -y nmap net-tools openssh traceroute
+    
+    echo -e "${YELLOW}开发工具${NC}"
+    echo "clang make cmake lua"
+    read -p "是否安装开发工具？(y/n): " confirm
+    [ "$confirm" = "y" ] && pkg install -y clang make cmake lua
+    
+    echo "安装完成"
+    read -p "按回车键返回菜单" enter
+}
+
+show_storage_usage() {
+    df -h /storage/emulated/0
+    df -h ~
+    read -p "按回车键返回菜单" enter
+}
+
+show_ip_address() {
+    public_ip=$(curl -s ifconfig.me)
+    if [ -n "$public_ip" ]; then
+        echo "公网 IP: $public_ip"
+    else
+        echo "无法获取公网 IP"
+    fi
+    read -p "按回车键返回菜单" enter
+}
+
+create_project_skeleton() {
+    read -p "请输入项目名称: " project_name
+    mkdir -p "./$project_name"
+    pushd "./$project_name" &> /dev/null
+    echo "a) Python项目"
+    echo "b) Node.js项目"
+    echo "c) 通用项目"
+    select option in "Python项目" "Node.js项目" "通用项目"; do
+        case $option in
+            "Python项目") touch main.py requirements.txt README.md; break ;;
+            "Node.js项目") touch package.json index.js README.md; break ;;
+            "通用项目") mkdir src lib tests docs; touch README.md; break ;;
+            *) echo "无效的选项" ;;
+        esac
+    done
+    popd &> /dev/null
+    echo "项目已创建：./$project_name"
+    read -p "按回车键返回菜单" enter
+}
+
+main_menu() {
+    while true; do
+        echo -e "${BLUE}TDKit v1.0.0-beta${NC}"
+        echo -e "${YELLOW}内部测试版 - 仅供体验${NC}"
+        echo -e "${GREEN}1) 检查环境${NC}"
+        echo -e "${GREEN}2) 安装工具${NC}"
+        echo -e "${GREEN}3) 显示存储使用${NC}"
+        echo -e "${GREEN}4) 显示IP地址${NC}"
+        echo -e "${GREEN}5) 创建项目骨架${NC}"
+        echo -e "${GREEN}q) 退出${NC}"
+        select option in "1) 检查环境" "2) 安装工具" "3) 显示存储使用" "4) 显示IP地址" "5) 创建项目骨架" "q) 退出"; do
+            case $option in
+                "1) 检查环境") check_dev_environment; break ;;
+                "2) 安装工具") install_common_tools; break ;;
+                "3) 显示存储使用") show_storage_usage; break ;;
+                "4) 显示IP地址") show_ip_address; break ;;
+                "5) 创建项目骨架") create_project_skeleton; break ;;
+                "q) 退出") exit 0 ;;
+                *) echo "无效的选项" ;;
+            esac
+        done
+    done
+}
+
+if [ -z "$PREFIX" ]; then
+    echo -e "${RED}请在 Termux 中运行此脚本${NC}"
+    exit 1
+fi
+
+if [ "$1" == "-e" ]; then
+    check_dev_environment
+    exit 0
+elif [ "$1" == "-i" ]; then
+    install_common_tools
+    exit 0
+fi
+
+main_menu
