@@ -136,3 +136,53 @@ Timeline is tentative.
 发布时间为暂定。
 
 — Maintainer
+
+---
+
+## Pre-release Surprise / 提前更新惊喜 🎉
+
+**v1.0.1-beta** has been pushed ahead of schedule!
+
+### What's New / 新增内容
+
+| Category | Item | Status |
+|----------|------|--------|
+| 🌐 Language | Bilingual menu (Chinese / English) | ✅ Done |
+| 📜 Agreement | User agreement prompt (Yes / No) | ✅ Done |
+| 🌍 Network | Internal IP detection (fallback methods) | ✅ Done |
+| 💡 Advice | Smart install suggestions | ✅ Done |
+| 🔧 Fix | Duplicate menu numbering | ✅ Done |
+| 🔧 Fix | Tool detection graceful fallback | ✅ Done |
+
+### Known Bug / 已知问题
+
+| Bug | Description | Fix ETA |
+|-----|-------------|---------|
+| 🔄 Init loop | User agreement & language selection repeats on every launch | Next patch (Mon) |
+
+The initialization prompt currently runs every time you start TDKit.  
+A detection mechanism will be added soon to remember your previous choice.
+
+初始化选择目前每次启动都会重复。  
+将在下个补丁中加入记忆功能，不再重复询问。
+
+---
+
+### 更新对比
+
+| 模块 | v1.0.0-beta | v1.0.1-beta |
+|------|-------------|-------------|
+| 语言 | 仅中文 | 中英双语切换 |
+| 首次启动 | 无提示 | 用户协议确认 (Yes/No) |
+| 菜单显示 | 编号重复 | 已修复 |
+| 工具检测 | 无版本号时报错 | 降级处理 |
+| 内网 IP | 不支持 | 支持 (多种方式) |
+| 智能建议 | 不支持 | 支持 |
+| 初始化流程 | 直接进菜单 | 每次询问协议+语言 ⚠️ |
+
+### Coming in next patch / 下个补丁预告
+
+- Fix: initialization loop (remember user choice)
+- Stability improvements
+
+— Maintainer
