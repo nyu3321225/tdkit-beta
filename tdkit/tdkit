@@ -2,7 +2,7 @@
 # Permission: chmod +x
 # Author: nyu3321225
 # GitHub: https://github.com/nyu3321225
-# Version: 1.0.0-beta (Internal Testing)
+# Version: 1.0.1-beta (Internal Testing)
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -10,21 +10,73 @@ YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+# Language setting
+LANG_CHOICE="zh"
+
+# User agreement
+user_agreement() {
+    clear
+    echo -e "${BLUE}═══════════════════════════════════${NC}"
+    echo -e "${BLUE}  TDKit v1.0.1-beta${NC}"
+    echo -e "${BLUE}  Terminal Development Kit${NC}"
+    echo -e "${BLUE}═══════════════════════════════════${NC}"
+    echo ""
+    echo -e "This is a free and open-source tool."
+    echo -e "It provides environment checking, tool installation,"
+    echo -e "storage monitoring, IP lookup, and project scaffolding."
+    echo ""
+    echo -e "By using this tool, you agree to the following:"
+    echo -e "  • Use at your own risk"
+    echo -e "  • No warranty is provided"
+    echo -e "  • MIT License applies"
+    echo ""
+    echo -e "本工具为免费开源软件，使用风险自负。"
+    echo -e "继续使用即表示您同意上述条款。"
+    echo ""
+    read -p "Do you agree / 是否同意？(y/n): " agree
+    if [ "$agree" != "y" ] && [ "$agree" != "Y" ]; then
+        echo -e "${RED}已退出。Exiting.${NC}"
+        exit 0
+    fi
+    echo ""
+    echo -e "${GREEN}Select language / 选择语言：${NC}"
+    echo "1) 中文"
+    echo "2) English"
+    read -p "Choice / 选择 (1/2): " lang_choice
+    if [ "$lang_choice" = "2" ]; then
+        LANG_CHOICE="en"
+    else
+        LANG_CHOICE="zh"
+    fi
+    clear
+}
+
+# Print message based on language
+print_msg() {
+    local zh_msg="$1"
+    local en_msg="$2"
+    if [ "$LANG_CHOICE" = "en" ]; then
+        echo -e "$en_msg"
+    else
+        echo -e "$zh_msg"
+    fi
+}
+
 check_dev_environment() {
     tools=("git" "node" "python3" "curl" "wget" "nano" "tree" "htop" "ffmpeg" "imagemagick" "tmux" "neofetch" "ranger" "fzf" "nmap" "net-tools" "openssh" "traceroute" "clang" "make" "cmake" "lua")
     installed_tools=0
     for tool in "${tools[@]}"; do
-        version=$($tool --version 2>/dev/null | head -1)
+        version=$($tool --version 2>&1 | head -1 2>&1)
         if [ -n "$version" ]; then
             echo -e "${GREEN}✓ $tool $version${NC}"
         else
-            echo -e "${GREEN}✓ $tool 已安装${NC}"
+            echo -e "${GREEN}✓ $tool $(print_msg "已安装" "installed")${NC}"
         fi
         ((installed_tools++))
     done
-    echo -e "${GREEN}$installed_tools/${#tools[@]} 个工具已安装${NC}"
+    echo -e "${GREEN}$installed_tools/${#tools[@]} $(print_msg "个工具已安装" "tools installed")${NC}"
 
-    # 智能安装建议
+    # Smart install suggestions
     missing_basic=""
     missing_media=""
     missing_dev=""
@@ -38,120 +90,155 @@ check_dev_environment() {
         fi
     done
     if [ -n "$missing_basic" ]; then
-        echo -e "${YELLOW}💡 建议安装基础工具：pkg install$missing_basic${NC}"
+        echo -e "${YELLOW}💡 $(print_msg "建议安装基础工具" "Suggested: basic tools")：pkg install$missing_basic${NC}"
     fi
     if [ -n "$missing_media" ]; then
-        echo -e "${YELLOW}💡 建议安装媒体工具：pkg install$missing_media${NC}"
+        echo -e "${YELLOW}💡 $(print_msg "建议安装媒体工具" "Suggested: media tools")：pkg install$missing_media${NC}"
     fi
     if [ -n "$missing_dev" ]; then
-        echo -e "${YELLOW}💡 建议安装开发工具：pkg install$missing_dev${NC}"
+        echo -e "${YELLOW}💡 $(print_msg "建议安装开发工具" "Suggested: dev tools")：pkg install$missing_dev${NC}"
     fi
-    read -p "按回车键返回菜单" enter
+    read -p "$(print_msg "按回车键返回菜单" "Press Enter to return")" enter
 }
 
 install_common_tools() {
-    echo -e "${BLUE}TDKit v1.0.0-beta${NC}"
-    echo -e "${YELLOW}内部测试版 - 仅供体验${NC}"
-    echo -e "${YELLOW}基础工具${NC}"
+    echo -e "${BLUE}TDKit v1.0.1-beta${NC}"
+    
+    echo -e "${YELLOW}$(print_msg "基础工具" "Basic Tools")${NC}"
     echo "which nano tree curl wget git htop"
-    read -p "是否安装基础工具？(y/n): " confirm
+    read -p "$(print_msg "是否安装基础工具？(y/n): " "Install basic tools? (y/n): ")" confirm
     [ "$confirm" = "y" ] && pkg install -y nano tree curl wget git htop
     
-    echo -e "${YELLOW}媒体工具${NC}"
+    echo -e "${YELLOW}$(print_msg "媒体工具" "Media Tools")${NC}"
     echo "ffmpeg imagemagick"
-    read -p "是否安装媒体工具？(y/n): " confirm
+    read -p "$(print_msg "是否安装媒体工具？(y/n): " "Install media tools? (y/n): ")" confirm
     [ "$confirm" = "y" ] && pkg install -y ffmpeg imagemagick
     
-    echo -e "${YELLOW}终端增强${NC}"
+    echo -e "${YELLOW}$(print_msg "终端增强" "Terminal Enhancement")${NC}"
     echo "tmux neofetch ranger fzf"
-    read -p "是否安装终端增强工具？(y/n): " confirm
+    read -p "$(print_msg "是否安装终端增强工具？(y/n): " "Install terminal tools? (y/n): ")" confirm
     [ "$confirm" = "y" ] && pkg install -y tmux neofetch ranger fzf
     
-    echo -e "${YELLOW}网络工具${NC}"
+    echo -e "${YELLOW}$(print_msg "网络工具" "Network Tools")${NC}"
     echo "nmap net-tools openssh traceroute"
-    read -p "是否安装网络工具？(y/n): " confirm
+    read -p "$(print_msg "是否安装网络工具？(y/n): " "Install network tools? (y/n): ")" confirm
     [ "$confirm" = "y" ] && pkg install -y nmap net-tools openssh traceroute
     
-    echo -e "${YELLOW}开发工具${NC}"
+    echo -e "${YELLOW}$(print_msg "开发工具" "Development Tools")${NC}"
     echo "clang make cmake lua"
-    read -p "是否安装开发工具？(y/n): " confirm
+    read -p "$(print_msg "是否安装开发工具？(y/n): " "Install dev tools? (y/n): ")" confirm
     [ "$confirm" = "y" ] && pkg install -y clang make cmake lua
     
-    echo "安装完成"
-    read -p "按回车键返回菜单" enter
+    echo "$(print_msg "安装完成" "Installation complete")"
+    read -p "$(print_msg "按回车键返回菜单" "Press Enter to return")" enter
 }
 
 show_storage_usage() {
+    echo -e "${BLUE}$(print_msg "存储使用情况" "Storage Usage")${NC}"
     df -h /storage/emulated/0
     df -h ~
-    read -p "按回车键返回菜单" enter
+    read -p "$(print_msg "按回车键返回菜单" "Press Enter to return")" enter
 }
 
 show_ip_address() {
-    public_ip=$(curl -s ifconfig.me)
-    if [ -n "$public_ip" ]; then
-        echo "公网 IP: $public_ip"
+    echo -e "${BLUE}$(print_msg "网络信息" "Network Info")${NC}"
+    
+    # Internal IP
+    internal_ip=$(ip -4 addr show wlan0 2>/dev/null | grep inet | awk '{print $2}' | cut -d/ -f1)
+    if [ -n "$internal_ip" ]; then
+        echo -e "${GREEN}$(print_msg "内网 IP" "Internal IP")：$internal_ip${NC}"
     else
-        echo "无法获取公网 IP"
+        internal_ip=$(ip -4 addr show eth0 2>/dev/null | grep inet | awk '{print $2}' | cut -d/ -f1)
+        if [ -n "$internal_ip" ]; then
+            echo -e "${GREEN}$(print_msg "内网 IP" "Internal IP")：$internal_ip${NC}"
+        else
+            echo -e "${YELLOW}$(print_msg "无法获取内网 IP" "Unable to get internal IP")${NC}"
+        fi
     fi
-    read -p "按回车键返回菜单" enter
+    
+    # Public IP
+    public_ip=$(curl -s --max-time 5 ifconfig.me)
+    if [ -n "$public_ip" ]; then
+        echo -e "${GREEN}$(print_msg "公网 IP" "Public IP")：$public_ip${NC}"
+    else
+        echo -e "${YELLOW}$(print_msg "无法获取公网 IP" "Unable to get public IP")${NC}"
+    fi
+    
+    read -p "$(print_msg "按回车键返回菜单" "Press Enter to return")" enter
 }
 
 create_project_skeleton() {
-    read -p "请输入项目名称: " project_name
+    read -p "$(print_msg "请输入项目名称" "Enter project name"): " project_name
     mkdir -p "./$project_name"
     pushd "./$project_name" &> /dev/null
-    echo "a) Python项目"
-    echo "b) Node.js项目"
-    echo "c) 通用项目"
-    select option in "Python项目" "Node.js项目" "通用项目"; do
+    echo "$(print_msg "a) Python项目" "a) Python project")"
+    echo "$(print_msg "b) Node.js项目" "b) Node.js project")"
+    echo "$(print_msg "c) 通用项目" "c) Generic project")"
+    select option in "Python" "Node.js" "Generic"; do
         case $option in
-            "Python项目") touch main.py requirements.txt README.md; break ;;
-            "Node.js项目") touch package.json index.js README.md; break ;;
-            "通用项目") mkdir src lib tests docs; touch README.md; break ;;
-            *) echo "无效的选项" ;;
+            "Python") touch main.py requirements.txt README.md; break ;;
+            "Node.js") touch package.json index.js README.md; break ;;
+            "Generic") mkdir src lib tests docs; touch README.md; break ;;
+            *) echo "$(print_msg "无效的选项" "Invalid option")" ;;
         esac
     done
     popd &> /dev/null
-    echo "项目已创建：./$project_name"
-    read -p "按回车键返回菜单" enter
+    echo "$(print_msg "项目已创建" "Project created")：./$project_name"
+    read -p "$(print_msg "按回车键返回菜单" "Press Enter to return")" enter
 }
 
 main_menu() {
     while true; do
-        echo -e "${BLUE}TDKit v1.0.0-beta${NC}"
-        echo -e "${YELLOW}内部测试版 - 仅供体验${NC}"
-        echo -e "${GREEN}1) 检查环境${NC}"
-        echo -e "${GREEN}2) 安装工具${NC}"
-        echo -e "${GREEN}3) 显示存储使用${NC}"
-        echo -e "${GREEN}4) 显示IP地址${NC}"
-        echo -e "${GREEN}5) 创建项目骨架${NC}"
-        echo -e "${GREEN}q) 退出${NC}"
-        select option in "1) 检查环境" "2) 安装工具" "3) 显示存储使用" "4) 显示IP地址" "5) 创建项目骨架" "q) 退出"; do
-            case $option in
-                "1) 检查环境") check_dev_environment; break ;;
-                "2) 安装工具") install_common_tools; break ;;
-                "3) 显示存储使用") show_storage_usage; break ;;
-                "4) 显示IP地址") show_ip_address; break ;;
-                "5) 创建项目骨架") create_project_skeleton; break ;;
-                "q) 退出") exit 0 ;;
-                *) echo "无效的选项" ;;
-            esac
-        done
+        echo -e "${BLUE}TDKit v1.0.1-beta${NC}"
+        echo -e "${YELLOW}$(print_msg "内部测试版" "Internal Testing")${NC}"
+        PS3="$(print_msg "请选择" "Choice"): "
+        if [ "$LANG_CHOICE" = "en" ]; then
+            select option in "Check Environment" "Install Tools" "Storage Usage" "IP Address" "Create Project" "Exit"; do
+                case $option in
+                    "Check Environment") check_dev_environment; break ;;
+                    "Install Tools") install_common_tools; break ;;
+                    "Storage Usage") show_storage_usage; break ;;
+                    "IP Address") show_ip_address; break ;;
+                    "Create Project") create_project_skeleton; break ;;
+                    "Exit") exit 0 ;;
+                    *) echo "Invalid option" ;;
+                esac
+            done
+        else
+            select option in "检查环境" "安装工具" "存储使用" "IP地址" "创建项目" "退出"; do
+                case $option in
+                    "检查环境") check_dev_environment; break ;;
+                    "安装工具") install_common_tools; break ;;
+                    "存储使用") show_storage_usage; break ;;
+                    "IP地址") show_ip_address; break ;;
+                    "创建项目") create_project_skeleton; break ;;
+                    "退出") exit 0 ;;
+                    *) echo "无效的选项" ;;
+                esac
+            done
+        fi
     done
 }
 
+# Check Termux environment
 if [ -z "$PREFIX" ]; then
     echo -e "${RED}请在 Termux 中运行此脚本${NC}"
     exit 1
 fi
 
+# Handle command line arguments
 if [ "$1" == "-e" ]; then
+    LANG_CHOICE="zh"
     check_dev_environment
     exit 0
 elif [ "$1" == "-i" ]; then
+    LANG_CHOICE="zh"
     install_common_tools
     exit 0
 fi
 
+# Show user agreement on first launch
+user_agreement
+
+# Start main menu
 main_menu
