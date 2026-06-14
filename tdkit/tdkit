@@ -10,10 +10,8 @@ YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-# Language setting
 LANG_CHOICE="zh"
 
-# User agreement
 user_agreement() {
     clear
     echo -e "${BLUE}═══════════════════════════════════${NC}"
@@ -26,9 +24,9 @@ user_agreement() {
     echo -e "storage monitoring, IP lookup, and project scaffolding."
     echo ""
     echo -e "By using this tool, you agree to the following:"
-    echo -e "  • Use at your own risk"
-    echo -e "  • No warranty is provided"
-    echo -e "  • MIT License applies"
+    echo -e "  - Use at your own risk"
+    echo -e "  - No warranty is provided"
+    echo -e "  - MIT License applies"
     echo ""
     echo -e "本工具为免费开源软件，使用风险自负。"
     echo -e "继续使用即表示您同意上述条款。"
@@ -51,7 +49,6 @@ user_agreement() {
     clear
 }
 
-# Print message based on language
 print_msg() {
     local zh_msg="$1"
     local en_msg="$2"
@@ -76,7 +73,6 @@ check_dev_environment() {
     done
     echo -e "${GREEN}$installed_tools/${#tools[@]} $(print_msg "个工具已安装" "tools installed")${NC}"
 
-    # Smart install suggestions
     missing_basic=""
     missing_media=""
     missing_dev=""
@@ -103,32 +99,26 @@ check_dev_environment() {
 
 install_common_tools() {
     echo -e "${BLUE}TDKit v1.0.1-beta${NC}"
-    
     echo -e "${YELLOW}$(print_msg "基础工具" "Basic Tools")${NC}"
     echo "which nano tree curl wget git htop"
     read -p "$(print_msg "是否安装基础工具？(y/n): " "Install basic tools? (y/n): ")" confirm
     [ "$confirm" = "y" ] && pkg install -y nano tree curl wget git htop
-    
     echo -e "${YELLOW}$(print_msg "媒体工具" "Media Tools")${NC}"
     echo "ffmpeg imagemagick"
     read -p "$(print_msg "是否安装媒体工具？(y/n): " "Install media tools? (y/n): ")" confirm
     [ "$confirm" = "y" ] && pkg install -y ffmpeg imagemagick
-    
     echo -e "${YELLOW}$(print_msg "终端增强" "Terminal Enhancement")${NC}"
     echo "tmux neofetch ranger fzf"
     read -p "$(print_msg "是否安装终端增强工具？(y/n): " "Install terminal tools? (y/n): ")" confirm
     [ "$confirm" = "y" ] && pkg install -y tmux neofetch ranger fzf
-    
     echo -e "${YELLOW}$(print_msg "网络工具" "Network Tools")${NC}"
     echo "nmap net-tools openssh traceroute"
     read -p "$(print_msg "是否安装网络工具？(y/n): " "Install network tools? (y/n): ")" confirm
     [ "$confirm" = "y" ] && pkg install -y nmap net-tools openssh traceroute
-    
     echo -e "${YELLOW}$(print_msg "开发工具" "Development Tools")${NC}"
     echo "clang make cmake lua"
     read -p "$(print_msg "是否安装开发工具？(y/n): " "Install dev tools? (y/n): ")" confirm
     [ "$confirm" = "y" ] && pkg install -y clang make cmake lua
-    
     echo "$(print_msg "安装完成" "Installation complete")"
     read -p "$(print_msg "按回车键返回菜单" "Press Enter to return")" enter
 }
@@ -142,33 +132,27 @@ show_storage_usage() {
 
 show_ip_address() {
     echo -e "${BLUE}$(print_msg "网络信息" "Network Info")${NC}"
-    
-    # Internal IP (fallback method)
     internal_ip=""
-    if [ -f /proc/net/arp ]; then
+    if command -v ip &> /dev/null; then
+        internal_ip=$(ip -4 addr show wlan0 2>/dev/null | grep inet | awk '{print $2}' | cut -d/ -f1)
+        if [ -z "$internal_ip" ]; then
+            internal_ip=$(ip -4 addr show eth0 2>/dev/null | grep inet | awk '{print $2}' | cut -d/ -f1)
+        fi
+    fi
+    if [ -z "$internal_ip" ] && [ -f /proc/net/arp ]; then
         internal_ip=$(awk '{if($1!="IP"&&$1!="") print $1}' /proc/net/arp | head -1)
-    fi
-    if [ -z "$internal_ip" ] && command -v getprop &> /dev/null; then
-        internal_ip=$(getprop dhcp.wlan0.ipaddress 2>/dev/null)
-    fi
-    if [ -z "$internal_ip" ] && command -v ifconfig &> /dev/null; then
-        internal_ip=$(ifconfig wlan0 2>/dev/null | grep "inet " | awk '{print $2}')
     fi
     if [ -n "$internal_ip" ]; then
         echo -e "${GREEN}$(print_msg "内网 IP" "Internal IP")：$internal_ip${NC}"
     else
-        echo -e "${YELLOW}$(print_msg "⚠ 无法获取内网 IP（Android 权限限制）" "⚠ Unable to get internal IP (Android permission restriction)")${NC}"
+        echo -e "${YELLOW}$(print_msg "无法获取内网 IP" "Unable to get internal IP")${NC}"
     fi
-    fi
-    
-    # Public IP
     public_ip=$(curl -s --max-time 5 ifconfig.me)
     if [ -n "$public_ip" ]; then
         echo -e "${GREEN}$(print_msg "公网 IP" "Public IP")：$public_ip${NC}"
     else
         echo -e "${YELLOW}$(print_msg "无法获取公网 IP" "Unable to get public IP")${NC}"
     fi
-    
     read -p "$(print_msg "按回车键返回菜单" "Press Enter to return")" enter
 }
 
@@ -225,13 +209,11 @@ main_menu() {
     done
 }
 
-# Check Termux environment
 if [ -z "$PREFIX" ]; then
     echo -e "${RED}请在 Termux 中运行此脚本${NC}"
     exit 1
 fi
 
-# Handle command line arguments
 if [ "$1" == "-e" ]; then
     LANG_CHOICE="zh"
     check_dev_environment
@@ -242,8 +224,5 @@ elif [ "$1" == "-i" ]; then
     exit 0
 fi
 
-# Show user agreement on first launch
 user_agreement
-
-# Start main menu
 main_menu
