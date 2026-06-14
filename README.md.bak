@@ -80,6 +80,43 @@ MIT License — Copyright (c) 2026 nyu3321225
 
 ---
 
+## Upcoming Patch Notice
+
+**v1.0.1-beta** — Estimated release: Next Mon–Tue (subject to change)
+
+### Planned Changes
+
+- Bilingual menu (Chinese / English selection on startup)
+- User agreement prompt (Yes / No) on first launch
+- Fix: duplicate menu numbering in `select`
+- Fix: improved fallback for tools without `--version`
+- General stability improvements
+
+### Status
+
+This is a minor patch update. No breaking changes expected.  
+Release timeline is tentative and may shift depending on testing results.
+
+---
+
+## 更新预告
+
+**v1.0.1-beta** — 预计发布时间：下周周一至周二（可能变动）
+
+### 计划更新内容
+
+- 中英双语菜单（启动时选择语言）
+- 首次启动时用户协议确认（Yes / No）
+- 修复：`select` 菜单编号重复问题
+- 修复：对不支持 `--version` 的工具做降级处理
+- 稳定性优化
+
+### 状态说明
+
+本次为小幅补丁更新，不涉及破坏性变更。  
+发布时间为暂定，可能根据测试结果调整。
+
+— Maintainer
 
 ---
 
