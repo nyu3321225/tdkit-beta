@@ -23,6 +23,29 @@ check_dev_environment() {
         ((installed_tools++))
     done
     echo -e "${GREEN}$installed_tools/${#tools[@]} 个工具已安装${NC}"
+
+    # 智能安装建议
+    missing_basic=""
+    missing_media=""
+    missing_dev=""
+    for tool in "${tools[@]}"; do
+        if ! command -v "$tool" &> /dev/null; then
+            case $tool in
+                nano|tree|curl|wget|git|htop) missing_basic="$missing_basic $tool" ;;
+                ffmpeg|imagemagick) missing_media="$missing_media $tool" ;;
+                clang|make|cmake|lua) missing_dev="$missing_dev $tool" ;;
+            esac
+        fi
+    done
+    if [ -n "$missing_basic" ]; then
+        echo -e "${YELLOW}💡 建议安装基础工具：pkg install$missing_basic${NC}"
+    fi
+    if [ -n "$missing_media" ]; then
+        echo -e "${YELLOW}💡 建议安装媒体工具：pkg install$missing_media${NC}"
+    fi
+    if [ -n "$missing_dev" ]; then
+        echo -e "${YELLOW}💡 建议安装开发工具：pkg install$missing_dev${NC}"
+    fi
     read -p "按回车键返回菜单" enter
 }
 
