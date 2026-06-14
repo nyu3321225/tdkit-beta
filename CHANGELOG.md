@@ -1,31 +1,34 @@
-# Changelog / 更新日志
+# Changelog
 
-## [v1.0.0-beta] - 2026-06-14
+## [1.0.0-beta] - 2026-06-14
 
-### Added / 新增
-- 首次发布，内部测试版
-- 环境检查：检测 22 种开发工具
-- 分类安装：按 5 个分类选装工具
-- 存储监控：显示内部存储和家目录使用情况
-- IP 查询：获取公网 IPv4/IPv6 地址
-- 项目骨架：支持 Python、Node.js、通用项目模板
+### Added
+- Initial beta release
+- Environment check: detect 22 development tools with version display
+- Category-based installer: Basic, Media, Terminal Enhancement, Network, Development
+- Storage monitor: display disk usage for internal storage and home directory
+- IP lookup: retrieve public IPv4/IPv6 address via curl
+- Project scaffold: generate Python, Node.js, and generic project skeletons
+- Color-coded terminal output for better readability
+- Command-line flags: -e (direct env check), -i (direct install mode)
 
-### Test Results / 测试结果
+### Test Results
 
-Test Date: 2026-06-14  
-Tester: nyu3321225  
-Device: Android Termux  
-Model: GLM-4-Flash (Free Tier)
-
-| Feature | Status | Notes |
-|---------|--------|-------|
+| Test Case | Status | Detail |
+|-----------|--------|--------|
 | Environment Check | ✅ Pass | 22/22 tools detected |
-| Tool Installer | ✅ Pass | All categories skip correctly |
-| Storage Monitor | ✅ Pass | 934G total, 42% used |
+| Category Installer | ✅ Pass | All 5 categories skipped correctly |
+| Storage Monitor | ✅ Pass | Total 934G, 42% used |
 | IP Lookup | ✅ Pass | IPv6 retrieved successfully |
-| Project Scaffold | ✅ Pass | Python project created |
+| Project Scaffold | ✅ Pass | Python project created under ./ |
 
-### Known Issues / 已知问题
-- `select` menu shows duplicate numbering (cosmetic only)
-- Some tools lack `--version` support (falls back gracefully)
-- Public IP may fail on restricted networks
+### Known Issues
+- `select` menu shows duplicate numbering in some Termux builds (cosmetic only)
+- Some tools lack `--version` support; falls back to "installed" without version string
+- Public IP retrieval may fail on networks without internet access
+- Project scaffold currently supports 3 templates
+
+### Notes
+- Tested on Android Termux
+- Requires wget or curl for installation
+- Zero external dependencies after installation
