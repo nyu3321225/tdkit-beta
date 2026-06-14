@@ -117,3 +117,59 @@ Release timeline is tentative and may shift depending on testing results.
 发布时间为暂定，可能根据测试结果调整。
 
 — Maintainer
+
+---
+
+## Upcoming Patch Notice
+
+**v1.0.1-beta** — Estimated release: Next Mon–Tue (subject to change)
+
+### What's Changed
+
+| Area | v1.0.0-beta | v1.0.1-beta |
+|------|-------------|-------------|
+| Language | Chinese only | Chinese / English toggle |
+| First launch | No prompt | User agreement (Yes / No) |
+| Menu display | Duplicate numbering | Fixed |
+| Tool detection | Errors on no --version | Graceful fallback |
+| Stability | Baseline | Improved |
+
+### Why the delay?
+
+Not abandoned. Just one person working on it.  
+Testing takes time, especially when you're the only tester.  
+Better late than broken.
+
+### Status
+
+Minor patch. No breaking changes.  
+Timeline is tentative.
+
+---
+
+## 更新预告
+
+**v1.0.1-beta** — 预计发布时间：下周周一至周二（可能变动）
+
+### 更新对比
+
+| 模块 | v1.0.0-beta | v1.0.1-beta |
+|------|-------------|-------------|
+| 语言 | 仅中文 | 中英双语切换 |
+| 首次启动 | 无提示 | 用户协议确认（Yes / No） |
+| 菜单显示 | 编号重复 | 已修复 |
+| 工具检测 | 无版本号时报错 | 降级处理 |
+| 稳定性 | 基础 | 优化 |
+
+### 为什么拖这么久？
+
+没鸽。只是一个人在做。  
+测试需要时间，尤其是当你只有一个测试员的时候。  
+晚点发，也比发个坏的强。
+
+### 状态说明
+
+小幅补丁更新，不涉及破坏性变更。  
+发布时间为暂定。
+
+— Maintainer
