@@ -16,7 +16,6 @@ user_agreement() {
     if [ -f "$HOME/.tdkit_init" ]; then
         return
     fi
-    touch "$HOME/.tdkit_init"
     clear
     echo -e "${BLUE}═══════════════════════════════════${NC}"
     echo -e "${BLUE}  TDKit v1.0.1-beta${NC}"
@@ -40,6 +39,7 @@ user_agreement() {
         echo -e "${RED}已退出。Exiting.${NC}"
         exit 0
     fi
+    touch "$HOME/.tdkit_init"
     echo ""
     echo -e "${GREEN}Select language / 选择语言：${NC}"
     echo "1) 中文"
@@ -50,7 +50,6 @@ user_agreement() {
     else
         LANG_CHOICE="zh"
     fi
-    touch "$HOME/.tdkit_init"
     clear
 }
 
@@ -145,17 +144,7 @@ show_ip_address() {
         fi
     fi
     if [ -z "$internal_ip" ] && [ -f /proc/net/arp ]; then
-    if [ -z "$internal_ip" ] && command -v ping &> /dev/null; then
-        gateway=$(ip route show 2>/dev/null | grep default | awk '{print $3}')
-        [ -z "$gateway" ] && gateway="192.168.1.1"
-        internal_ip=$(ping -c 1 -I wlan0 "$gateway" 2>&1 | grep -oP 'from \K[^: ]+' | head -1)
-    fi
         internal_ip=$(awk '{if($1!="IP"&&$1!="") print $1}' /proc/net/arp | head -1)
-    if [ -z "$internal_ip" ] && command -v ping &> /dev/null; then
-        gateway=$(ip route show 2>/dev/null | grep default | awk '{print $3}')
-        [ -z "$gateway" ] && gateway="192.168.1.1"
-        internal_ip=$(ping -c 1 -I wlan0 "$gateway" 2>&1 | grep -oP 'from \K[^: ]+' | head -1)
-    fi
     fi
     if [ -z "$internal_ip" ] && command -v ping &> /dev/null; then
         gateway=$(ip route show 2>/dev/null | grep default | awk '{print $3}')
