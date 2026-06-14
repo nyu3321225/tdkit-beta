@@ -1,34 +1,39 @@
 # Changelog
 
-## [1.0.0-beta] - 2026-06-14
+All notable changes to this project will be documented in this file.
+
+## [v1.0.1-ui] - 2026-06-14 (Beta)
 
 ### Added
-- Initial beta release
-- Environment check: detect 22 development tools with version display
-- Category-based installer: Basic, Media, Terminal Enhancement, Network, Development
-- Storage monitor: display disk usage for internal storage and home directory
-- IP lookup: retrieve public IPv4/IPv6 address via curl
-- Project scaffold: generate Python, Node.js, and generic project skeletons
-- Color-coded terminal output for better readability
-- Command-line flags: -e (direct env check), -i (direct install mode)
+| Feature | Description |
+|---------|-------------|
+| Bilingual Menu | Chinese / English selection on startup |
+| User Agreement | Yes/No prompt on first launch |
+| Internal IP Detection | Three fallback methods (ip → arp → ping) |
+| Smart Suggestions | Auto-detect missing tools after environment check |
+| Git Daily Report | Analyze any local repository's commit history |
+| Trust Confirmation | Confirm before reading repository data |
 
-### Test Results
+### Fixed
+| Bug | Description |
+|-----|-------------|
+| Menu Numbering | Duplicate numbers in select statements |
+| Tool Detection Crash | Error when --version flag is unsupported |
+| Initialization Loop | Repeated prompts on every launch |
+| Syntax Error | Script failure due to incomplete sed edits |
 
-| Test Case | Status | Detail |
-|-----------|--------|--------|
-| Environment Check | ✅ Pass | 22/22 tools detected |
-| Category Installer | ✅ Pass | All 5 categories skipped correctly |
-| Storage Monitor | ✅ Pass | Total 934G, 42% used |
-| IP Lookup | ✅ Pass | IPv6 retrieved successfully |
-| Project Scaffold | ✅ Pass | Python project created under ./ |
+### Changed
+- Complete UI overhaul with borders, colors, and aligned layout
+- Storage usage now displays formatted output with labels
+- Updated installation path to src/ directory
 
-### Known Issues
-- `select` menu shows duplicate numbering in some Termux builds (cosmetic only)
-- Some tools lack `--version` support; falls back to "installed" without version string
-- Public IP retrieval may fail on networks without internet access
-- Project scaffold currently supports 3 templates
+## [v1.0.0-beta] - 2026-06-14
 
-### Notes
-- Tested on Android Termux
-- Requires wget or curl for installation
-- Zero external dependencies after installation
+### Added
+- Initial public release
+- Environment check for 22 development tools
+- Category-based tool installer (5 categories)
+- Storage usage display
+- Public IP lookup
+- Project skeleton creation (Python, Node.js, Generic)
+- MIT License
