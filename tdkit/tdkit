@@ -143,17 +143,22 @@ show_storage_usage() {
 show_ip_address() {
     echo -e "${BLUE}$(print_msg "网络信息" "Network Info")${NC}"
     
-    # Internal IP
-    internal_ip=$(ip -4 addr show wlan0 2>/dev/null | grep inet | awk '{print $2}' | cut -d/ -f1)
+    # Internal IP (fallback method)
+    internal_ip=""
+    if [ -f /proc/net/arp ]; then
+        internal_ip=$(awk '{if($1!="IP"&&$1!="") print $1}' /proc/net/arp | head -1)
+    fi
+    if [ -z "$internal_ip" ] && command -v getprop &> /dev/null; then
+        internal_ip=$(getprop dhcp.wlan0.ipaddress 2>/dev/null)
+    fi
+    if [ -z "$internal_ip" ] && command -v ifconfig &> /dev/null; then
+        internal_ip=$(ifconfig wlan0 2>/dev/null | grep "inet " | awk '{print $2}')
+    fi
     if [ -n "$internal_ip" ]; then
         echo -e "${GREEN}$(print_msg "内网 IP" "Internal IP")：$internal_ip${NC}"
     else
-        internal_ip=$(ip -4 addr show eth0 2>/dev/null | grep inet | awk '{print $2}' | cut -d/ -f1)
-        if [ -n "$internal_ip" ]; then
-            echo -e "${GREEN}$(print_msg "内网 IP" "Internal IP")：$internal_ip${NC}"
-        else
-            echo -e "${YELLOW}$(print_msg "无法获取内网 IP" "Unable to get internal IP")${NC}"
-        fi
+        echo -e "${YELLOW}$(print_msg "⚠ 无法获取内网 IP（Android 权限限制）" "⚠ Unable to get internal IP (Android permission restriction)")${NC}"
+    fi
     fi
     
     # Public IP
